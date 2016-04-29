@@ -56,7 +56,7 @@ describe(`redux-router`, () => {
             }
 
             const storeMock = {
-                getState: () => stateMock,
+                getState: () => stateMock
             }
 
             expect(() => {
