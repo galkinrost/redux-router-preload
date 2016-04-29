@@ -1,5 +1,5 @@
-import { ROUTER_DID_CHANGE } from 'redux-router/lib/constants'
-import { SERVER_LOAD } from './constants'
+import {ROUTER_DID_CHANGE} from 'redux-router/lib/constants'
+import {SERVER_LOAD} from './constants'
 
 const initialState = {
     loadedOnServer: false,
@@ -10,13 +10,17 @@ const initialState = {
 const routerPreloadStateReducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case ROUTER_DID_CHANGE:
+            if (!state.loadedOnServer) {
+                return state
+            }
+
             if (state.initialDidChangeDispatched) {
                 return {
                     ...state,
                     shouldReloadAfterServerPreload: true
                 }
             }
-            
+
             return {
                 ...state,
                 initialDidChangeDispatched: true

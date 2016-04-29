@@ -1,5 +1,5 @@
-import { ROUTER_DID_CHANGE } from 'redux-router/lib/constants'
-import { SERVER_LOAD } from '../src/constants'
+import {ROUTER_DID_CHANGE} from 'redux-router/lib/constants'
+import {SERVER_LOAD} from '../src/constants'
 import expect from 'expect'
 import reducer from '../src/routerPreloadStateReducer'
 
@@ -14,12 +14,12 @@ describe(`redux-router-preload`, () => {
 
             expect(initialState.initialDidChangeDispatched).toBeFalsy()
 
-            const resultState = reducer(initialState, action)
+            const resultState = reducer({loadedOnServer: true}, action)
 
             expect(resultState.initialDidChangeDispatched).toBeTruthy()
         })
 
-        it(`allow reloading after the second ROUTER_DID_CHANGE action`, () => {
+        it(`should ignore ROUTER_DID_CHANGE if server loading didn't execute`, () => {
             const initialState = reducer()
 
             const action = {
@@ -34,7 +34,7 @@ describe(`redux-router-preload`, () => {
 
             resultState = reducer(resultState, action)
 
-            expect(resultState.shouldReloadAfterServerPreload).toBeTruthy()
+            expect(resultState.shouldReloadAfterServerPreload).toBeFalsy()
 
         })
 
@@ -52,6 +52,20 @@ describe(`redux-router-preload`, () => {
             expect(resultState.loadedOnServer).toBeTruthy()
         })
 
+        it(`allow reloading after the second ROUTER_DID_CHANGE action`, () => {
+            const initialState = reducer({
+                loadedOnServer: true,
+                shouldReloadAfterServerPreload: false
+            })
+
+            const action = {
+                type: ROUTER_DID_CHANGE
+            }
+
+            const resultState = reducer(initialState, action)
+
+            expect(resultState.shouldReloadAfterServerPreload).toBeFalsy()
+        })
 
     })
 })
