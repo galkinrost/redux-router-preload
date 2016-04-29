@@ -48,7 +48,13 @@ const preload = promiseCreator => WrappedComponent => {
         render() {
             const {loading} = this.state
 
-            return <WrappedComponent loading={loading}/>
+            const props = {
+                loading,
+                ...this.props
+            }
+            
+            return <WrappedComponent {...props} />
+
         }
     }
 

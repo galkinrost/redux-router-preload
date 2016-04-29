@@ -143,5 +143,32 @@ describe(`redux-router-preload`, () => {
                 )
             }).toThrow(/first argument of the preload decorator should return a promise/)
         })
+
+        it(`should transclude children`, () => {
+            const store = createStoreWithPreloadState({
+                loadedOnServer: true
+            })
+
+            class Container extends Component {
+                render() {
+                    return this.props.children
+                }
+            }
+
+            const Wrapped = preload()(Container)
+
+            const tree = TestUtils.renderIntoDocument(
+                <Provider store={store}>
+                    <Wrapped>
+                        <Passthrough />
+                    </Wrapped>
+                </Provider>
+            )
+
+
+            const result = TestUtils.scryRenderedComponentsWithType(tree, Passthrough)
+
+            expect(result.length).toEqual(1)
+        })
     })
 })
