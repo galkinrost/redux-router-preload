@@ -1,4 +1,4 @@
-import {LOADER_FIELD} from './constants'
+import {LOADER_FIELD, SERVER_LOAD} from './constants'
 import invariant from 'invariant'
 
 export const preload = store => {
@@ -19,6 +19,10 @@ export const preload = store => {
             invariant(promise && promise.then, `first argument of the preload decorator should return a promise`)
             return promise
         })
+
+    store.dispatch({
+        type: SERVER_LOAD
+    })
 
     return Promise.all(promises)
 }
