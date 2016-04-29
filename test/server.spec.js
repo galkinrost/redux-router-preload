@@ -1,10 +1,10 @@
-import {LOADER_FIELD} from '../src/constants'
+import {LOADER_FIELD, SERVER_LOAD} from '../src/constants'
 import expect from 'expect'
 import {preload} from '../src/server'
 
 describe(`redux-router`, () => {
     describe(`server`, () => {
-        it(`should call preload methods for components`, () => {
+        it(`should call preload methods for components and dispatch action`, () => {
             const preloadSpy1 = expect.createSpy().andReturn(Promise.resolve())
             const preloadSpy2 = expect.createSpy().andReturn(Promise.resolve())
 
@@ -22,13 +22,15 @@ describe(`redux-router`, () => {
                 }
             }
 
+            const dispatchSpy = expect.createSpy()
+
             const getStateSpy = expect
                 .createSpy()
                 .andReturn(stateMock)
 
             const storeMock = {
                 getState: getStateSpy,
-                dispatch: () => ({})
+                dispatch: dispatchSpy
             }
 
             const result = preload(storeMock)
@@ -42,6 +44,11 @@ describe(`redux-router`, () => {
 
             expect(preloadSpy2.calls.length).toEqual(1)
             expect(preloadSpy2.calls[ 0 ].arguments).toEqual([ storeMock.dispatch, stateMock ])
+
+            expect(dispatchSpy.calls.length).toEqual(1)
+            expect(dispatchSpy.calls[ 0 ].arguments[0]).toEqual({
+                type: SERVER_LOAD
+            })
         })
 
         it(`should throw error if someone preload method doesn't return promise`, () => {
