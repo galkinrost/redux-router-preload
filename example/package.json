@@ -1,0 +1,24 @@
+{
+  "name": "example",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node ./bootstrap.js"
+  },
+  "author": "Galkin Rostislav",
+  "dependencies": {
+    "express": "^4.13.4",
+    "history": "^2.1.1",
+    "query-string": "^4.1.0",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.1",
+    "react-redux": "^4.4.5",
+    "react-router": "2.3.0",
+    "redux": "^3.5.2",
+    "redux-devtools": "^3.2.0",
+    "redux-router": "^2.0.0-beta1",
+    "serialize-javascript": "^1.2.0",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.10.0"
+  }
+}

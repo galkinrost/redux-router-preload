@@ -9,8 +9,8 @@
     "build:umd:min": "cross-env NODE_ENV=production webpack src/index.js dist/redux-router-preload.min.js",
     "build": "npm run build:lib && npm run build:umd && npm run build:umd:min && node ./prepublish",
     "clean": "rimraf lib dist coverage",
-    "lint": "eslint src test",
-    "lint:fix": "eslint --fix src test",
+    "lint": "eslint src test example",
+    "lint:fix": "eslint --fix src test example",
     "prepublish": "npm run clean && npm run build",
     "test": "mocha --compilers js:babel-register --recursive --require ./test/setup.js",
     "test:watch": "npm test -- --watch"
@@ -45,7 +45,7 @@
     "react-addons-test-utils": "^15.0.1",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
-    "redux-router": "^1.0.0-beta8",
+    "redux-router": "^2.0.0-beta1",
     "rimraf": "^2.5.2"
   },
   "dependencies": {
