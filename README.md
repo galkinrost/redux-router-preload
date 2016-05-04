@@ -62,6 +62,12 @@ store.dispatch(match(url, (error, redirectLocation, routerState) => {
 }))
 ```
 
+## Test
+
+```
+npm test
+```
+
 ## License
 
 **MIT**
