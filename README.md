@@ -74,6 +74,14 @@ You can look for a working example [here](https://github.com/babotech/redux-rout
 npm test
 ```
 
+## How does it work?
+
+The key concept of the redux-router is to store information about current location in the redux`s store. So when transitions perform store is updated by actions.
+
+This module adds information in the store when preloading was executed on the server and prevent loading on the client. 
+
+But after first changing of the location client loading is available again.
+
 ## License
 
 **MIT**
