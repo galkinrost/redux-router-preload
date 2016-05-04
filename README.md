@@ -62,6 +62,10 @@ store.dispatch(match(url, (error, redirectLocation, routerState) => {
 }))
 ```
 
+## Example
+
+You can look for a working example [here](https://github.com/babotech/redux-router-preload/tree/master/example)
+
 ## Test
 
 ```
