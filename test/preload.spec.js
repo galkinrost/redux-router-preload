@@ -28,6 +28,10 @@ describe(`redux-router-preload`, () => {
                 loadedOnServer: false
             })
 
+            const props = {
+                foo: `bar`
+            }
+            
             const thenSpy = expect.createSpy()
 
             const promiseMock = {
@@ -42,13 +46,13 @@ describe(`redux-router-preload`, () => {
 
             const tree = TestUtils.renderIntoDocument(
                 <Provider store={store}>
-                    <Wrapped />
+                    <Wrapped {...props} />
                 </Provider>
             )
 
             expect(preloadSpy.calls.length).toEqual(1)
 
-            expect(preloadSpy.calls[ 0 ].arguments).toEqual([ store.dispatch, store.getState() ])
+            expect(preloadSpy.calls[ 0 ].arguments).toEqual([ store.dispatch, store.getState(), props ])
 
             const passthrough = TestUtils.findRenderedComponentWithType(tree, Passthrough)
 
@@ -69,6 +73,10 @@ describe(`redux-router-preload`, () => {
                 shouldReloadAfterServerPreload: true
             })
 
+            const props = {
+                foo: `bar`
+            }
+
             const thenSpy = expect.createSpy()
 
             const promiseMock = {
@@ -83,13 +91,13 @@ describe(`redux-router-preload`, () => {
 
             const tree = TestUtils.renderIntoDocument(
                 <Provider store={store}>
-                    <Wrapped />
+                    <Wrapped {...props} />
                 </Provider>
             )
 
             expect(preloadSpy.calls.length).toEqual(1)
 
-            expect(preloadSpy.calls[ 0 ].arguments).toEqual([ store.dispatch, store.getState() ])
+            expect(preloadSpy.calls[ 0 ].arguments).toEqual([ store.dispatch, store.getState(), props ])
 
             const passthrough = TestUtils.findRenderedComponentWithType(tree, Passthrough)
 

@@ -26,14 +26,14 @@ const preload = promiseCreator => WrappedComponent => {
         }
 
         componentWillMount() {
-            const {preloadState, dispatch, state} = this.props
+            const {preloadState, dispatch, state, ...ownProps} = this.props
 
             if (!preloadState.loadedOnServer || preloadState.shouldReloadAfterServerPreload) {
                 this.setState({
                     loading: true
                 })
 
-                const promise = promiseCreator(dispatch, state)
+                const promise = promiseCreator(dispatch, state, ownProps)
 
                 invariant(promise && promise.then, `first argument of the preload decorator should return a promise`)
 

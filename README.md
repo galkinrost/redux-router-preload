@@ -27,7 +27,7 @@ export default combineReducers({
 ```javascript
 import {preload} from 'redux-router-preload'
 
-@preload(() => new Promise(resolve => setTimeout(resolve, 3000)))
+@preload((dispatch, state, ownProps) => new Promise(resolve => setTimeout(resolve, 3000)))
 class ComponentWithPreloading extends Component {
   render() {
     const {loading} = this.props
