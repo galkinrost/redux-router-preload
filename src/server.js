@@ -1,7 +1,7 @@
 import {LOADER_FIELD, SERVER_LOAD} from './constants'
 import invariant from 'invariant'
 
-export const preload = store => {
+export const preload = (store, props) => {
     const state = store.getState()
 
     const routerState = state.router
@@ -15,7 +15,7 @@ export const preload = store => {
         .map(component => component[ LOADER_FIELD ])
         .filter(preloadMethod => preloadMethod)
         .map(preloadMethod => {
-            const promise = preloadMethod(store.dispatch, state)
+            const promise = preloadMethod(store.dispatch, state, props)
             invariant(promise && promise.then, `first argument of the preload decorator should return a promise`)
             return promise
         })

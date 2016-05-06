@@ -32,18 +32,22 @@ describe(`redux-router`, () => {
                 getState: getStateSpy,
                 dispatch: dispatchSpy
             }
+            
+            const props = {
+                foo: `bar`
+            }
 
-            const result = preload(storeMock)
+            const result = preload(storeMock, props)
 
             expect(result.then).toExist()
 
             expect(getStateSpy.call.length).toEqual(1)
 
             expect(preloadSpy1.calls.length).toEqual(1)
-            expect(preloadSpy1.calls[ 0 ].arguments).toEqual([ storeMock.dispatch, stateMock ])
+            expect(preloadSpy1.calls[ 0 ].arguments).toEqual([ storeMock.dispatch, stateMock, props ])
 
             expect(preloadSpy2.calls.length).toEqual(1)
-            expect(preloadSpy2.calls[ 0 ].arguments).toEqual([ storeMock.dispatch, stateMock ])
+            expect(preloadSpy2.calls[ 0 ].arguments).toEqual([ storeMock.dispatch, stateMock, props ])
 
             expect(dispatchSpy.calls.length).toEqual(1)
             expect(dispatchSpy.calls[ 0 ].arguments[0]).toEqual({
