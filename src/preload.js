@@ -25,7 +25,20 @@ const preload = promiseCreator => WrappedComponent => {
             }
         }
 
+        componentWillReceiveProps(newProps) {
+            const oldId = this.props.state.router.id
+            const newId = newProps.state.router.id
+
+            if (oldId !== newId) {
+                this.preloadData()
+            }
+        }
+
         componentWillMount() {
+            this.preloadData()
+        }
+
+        preloadData() {
             const {preloadState, dispatch, state, ...ownProps} = this.props
 
             if (!preloadState.loadedOnServer || preloadState.shouldReloadAfterServerPreload) {
@@ -52,7 +65,7 @@ const preload = promiseCreator => WrappedComponent => {
                 loading,
                 ...this.props
             }
-            
+
             return <WrappedComponent {...props} />
 
         }
