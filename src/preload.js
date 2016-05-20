@@ -14,7 +14,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch
 })
 
-const preload = promiseCreator => WrappedComponent => {
+
+export const createPreload = (promiseCreator, WrappedComponent) =>
 
     class Preload extends Component {
 
@@ -70,6 +71,11 @@ const preload = promiseCreator => WrappedComponent => {
 
         }
     }
+
+
+const preload = promiseCreator => WrappedComponent => {
+
+    const Preload = createPreload(promiseCreator, WrappedComponent)
 
     Preload[ LOADER_FIELD ] = promiseCreator
 
