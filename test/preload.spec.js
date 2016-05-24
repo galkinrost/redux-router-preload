@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
+import preload, {createPreload} from '../src/preload'
 import {Provider} from 'react-redux'
 import TestUtils from 'react-addons-test-utils'
 import {createStore} from 'redux'
 import expect from 'expect'
-import preload from '../src/preload'
 
 class Target extends Component {
     render() {
@@ -16,6 +16,21 @@ class Passthrough extends Component {
         return <div/>
     }
 }
+
+const renderInContainer = ChildComponent => {
+    class PropChangeContainer extends Component {
+        constructor(props) {
+            super(props)
+            this.state = props
+        }
+
+        render() {
+            return <ChildComponent {...this.state} />
+        }
+    }
+    return PropChangeContainer
+}
+
 
 const createStoreWithPreloadState = state => createStore(() => ({
     preload: state
@@ -31,7 +46,7 @@ describe(`redux-router-preload`, () => {
             const props = {
                 foo: `bar`
             }
-            
+
             const thenSpy = expect.createSpy()
 
             const promiseMock = {
@@ -110,6 +125,46 @@ describe(`redux-router-preload`, () => {
                 .arguments[ 0 ]()
 
             expect(passthrough.props.loading).toBeFalsy()
+        })
+
+        it(`should call preload if the router's id has been changed`, () => {
+            const TWO = 2
+
+            const initialProps = {
+                state: {
+                    router: {
+                        id: 2
+                    }
+                },
+                preloadState: {
+                    loadedOnServer: false
+                }
+            }
+
+            const newProps = {
+                state: {
+                    router: {
+                        id: 42
+                    }
+                }
+            }
+
+            const promiseMock = {then: expect.createSpy()}
+            const preloadSpy = expect.createSpy().andReturn(promiseMock)
+
+            const Preload = createPreload(preloadSpy, Target)
+            const PropChangeContainer = renderInContainer(Preload)
+
+            const tree = TestUtils.renderIntoDocument(
+                <PropChangeContainer {...initialProps} />
+            )
+
+            expect(preloadSpy.calls.length).toEqual(1)
+
+            const renderedPropChangeContainer = TestUtils.findRenderedComponentWithType(tree, PropChangeContainer)
+            renderedPropChangeContainer.setState(newProps)
+
+            expect(preloadSpy.calls.length).toEqual(TWO)
         })
 
         it(`should not call the preload method if it's already called on the server`, () => {
