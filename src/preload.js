@@ -32,7 +32,7 @@ export const createPreload = (promiseCreator, WrappedComponent) =>
             const oldParams = this.props.state.router.params
 
             if (!isEqual(newParams, oldParams)) {
-                this.preloadData()
+                this.preloadData(newProps)
             }
         }
 
@@ -40,8 +40,8 @@ export const createPreload = (promiseCreator, WrappedComponent) =>
             this.preloadData()
         }
 
-        preloadData() {
-            const {preloadState, dispatch, state, ...ownProps} = this.props
+        preloadData(newProps) {
+            const {preloadState, dispatch, state, ...ownProps} = newProps || this.props
 
             if (!preloadState.loadedOnServer || preloadState.shouldReloadAfterServerPreload) {
                 this.setState({
