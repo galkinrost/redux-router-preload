@@ -133,7 +133,9 @@ describe(`redux-router-preload`, () => {
             const initialProps = {
                 state: {
                     router: {
-                        id: 2
+                        params: {
+                            id: 2
+                        }
                     }
                 },
                 preloadState: {
@@ -144,7 +146,9 @@ describe(`redux-router-preload`, () => {
             const newProps = {
                 state: {
                     router: {
-                        id: 42
+                        params: {
+                            id: 42
+                        }
                     }
                 }
             }
