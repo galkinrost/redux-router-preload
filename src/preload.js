@@ -4,6 +4,7 @@ import {LOADER_FIELD} from './constants'
 import {connect} from 'react-redux'
 import hoist from 'hoist-non-react-statics'
 import invariant from 'invariant'
+import isEqual from 'lodash.isequal'
 
 const mapStateToProps = state => ({
     preloadState: state.preload,
@@ -27,10 +28,10 @@ export const createPreload = (promiseCreator, WrappedComponent) =>
         }
 
         componentWillReceiveProps(newProps) {
-            const oldId = this.props.state.router.id
-            const newId = newProps.state.router.id
+            const newParams = newProps.state.router.params
+            const oldParams = this.props.state.router.params
 
-            if (oldId !== newId) {
+            if (!isEqual(newParams, oldParams)) {
                 this.preloadData()
             }
         }
