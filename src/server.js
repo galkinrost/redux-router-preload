@@ -12,10 +12,10 @@ export const preload = (store, props) => {
 
     const promises = routerState
         .components
-        .reduce((loaderFields, component) =>
+        .reduce((preloadMethods, component) =>
             component && component[LOADER_FIELD] ?
-                loaderFields.concat(component[ LOADER_FIELD ]) :
-                loaderFields,
+                preloadMethods.concat(component[ LOADER_FIELD ]) :
+                preloadMethods,
         [])
         .map(preloadMethod => {
             const promise = preloadMethod(store.dispatch, state, props)
