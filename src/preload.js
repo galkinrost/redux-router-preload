@@ -4,6 +4,7 @@ import {LOADER_FIELD} from './constants'
 import {connect} from 'react-redux'
 import hoist from 'hoist-non-react-statics'
 import invariant from 'invariant'
+import isEqual from 'lodash.isequal'
 
 const mapStateToProps = state => ({
     preloadState: state.preload,
@@ -14,7 +15,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch
 })
 
-const preload = promiseCreator => WrappedComponent => {
+
+export const createPreload = (promiseCreator, WrappedComponent) =>
 
     class Preload extends Component {
 
@@ -25,15 +27,28 @@ const preload = promiseCreator => WrappedComponent => {
             }
         }
 
+        componentWillReceiveProps(newProps) {
+            const newParams = newProps.state.router.params
+            const oldParams = this.props.state.router.params
+
+            if (!isEqual(newParams, oldParams)) {
+                this.preloadData(newProps)
+            }
+        }
+
         componentWillMount() {
-            const {preloadState, dispatch, state} = this.props
+            this.preloadData()
+        }
+
+        preloadData(newProps) {
+            const {preloadState, dispatch, state, ...ownProps} = newProps || this.props
 
             if (!preloadState.loadedOnServer || preloadState.shouldReloadAfterServerPreload) {
                 this.setState({
                     loading: true
                 })
 
-                const promise = promiseCreator(dispatch, state)
+                const promise = promiseCreator(dispatch, state, ownProps)
 
                 invariant(promise && promise.then, `first argument of the preload decorator should return a promise`)
 
@@ -52,11 +67,16 @@ const preload = promiseCreator => WrappedComponent => {
                 loading,
                 ...this.props
             }
-            
+
             return <WrappedComponent {...props} />
 
         }
     }
+
+
+const preload = promiseCreator => WrappedComponent => {
+
+    const Preload = createPreload(promiseCreator, WrappedComponent)
 
     Preload[ LOADER_FIELD ] = promiseCreator
 
