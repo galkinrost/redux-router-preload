@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
-import preload, {createPreload} from '../src/preload'
-import {Provider} from 'react-redux'
+import React, { Component } from 'react'
+import preload, { createPreload } from '../src/preload'
+import { Provider } from 'react-redux'
 import TestUtils from 'react-addons-test-utils'
-import {createStore} from 'redux'
+import { createStore } from 'redux'
 import expect from 'expect'
 
 class Target extends Component {
@@ -131,12 +131,9 @@ describe(`redux-router-preload`, () => {
             const TWO = 2
 
             const initialProps = {
-                state: {
-                    router: {
-                        params: {
-                            id: 2
-                        }
-                    }
+
+                routeParams: {
+                    id: 2
                 },
                 preloadState: {
                     loadedOnServer: false
@@ -144,12 +141,8 @@ describe(`redux-router-preload`, () => {
             }
 
             const newProps = {
-                state: {
-                    router: {
-                        params: {
-                            id: 42
-                        }
-                    }
+                routeParams: {
+                    id: 42
                 }
             }
 

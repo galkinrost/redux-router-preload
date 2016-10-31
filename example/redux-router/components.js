@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
-import {Link} from 'react-router'
-import {connect} from 'react-redux'
-import {preload} from '../lib'
+import React, { Component } from 'react'
+import { Link } from 'react-router'
+import { connect } from 'react-redux'
+import { preload } from '../../lib'
 
 const PROMISE_TIMEOUT = 5000
 

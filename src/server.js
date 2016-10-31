@@ -1,17 +1,10 @@
 import {LOADER_FIELD, SERVER_LOAD} from './constants'
 import invariant from 'invariant'
 
-export const preload = (store, props) => {
+export const preload = (components, store, props) => {
     const state = store.getState()
 
-    const routerState = state.router
-
-    if (!routerState) {
-        return Promise.resolve()
-    }
-
-    const promises = routerState
-        .components
+    const promises = components
         .reduce((preloadMethods, component) =>
             component && component[LOADER_FIELD] ?
                 preloadMethods.concat(component[ LOADER_FIELD ]) :

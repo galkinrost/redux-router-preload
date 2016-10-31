@@ -1,6 +1,6 @@
-import {LOADER_FIELD} from '../src/constants'
+import { LOADER_FIELD, SERVER_LOAD } from '../src/constants'
 import expect from 'expect'
-import {preload} from '../src/server'
+import { preload } from '../src/server'
 
 describe(`redux-router`, () => {
     describe(`server`, () => {
@@ -9,18 +9,18 @@ describe(`redux-router`, () => {
             const preloadSpy2 = expect.createSpy().andReturn(Promise.resolve())
 
             const stateMock = {
-                router: {
-                    components: [
-                        {
-                            [LOADER_FIELD]: preloadSpy1
-                        },
-                        {},
-                        {
-                            [LOADER_FIELD]: preloadSpy2
-                        }
-                    ]
-                }
+                router: {}
             }
+
+            const components = [
+                {
+                    [LOADER_FIELD]: preloadSpy1
+                },
+                {},
+                {
+                    [LOADER_FIELD]: preloadSpy2
+                }
+            ]
 
             const dispatchSpy = expect.createSpy()
 
@@ -37,7 +37,7 @@ describe(`redux-router`, () => {
                 foo: `bar`
             }
 
-            const result = preload(storeMock, props)
+            const result = preload(components, storeMock, props)
 
             expect(result.then).toExist()
 
@@ -50,7 +50,7 @@ describe(`redux-router`, () => {
             expect(preloadSpy2.calls[ 0 ].arguments).toEqual([ storeMock.dispatch, stateMock, props ])
 
             expect(dispatchSpy.calls.length).toEqual(1)
-            expect(dispatchSpy.calls[ 0 ].arguments[0]).toEqual({
+            expect(dispatchSpy.calls[ 0 ].arguments[ 0 ]).toEqual({
                 type: SERVER_LOAD
             })
         })
@@ -60,22 +60,22 @@ describe(`redux-router`, () => {
             const preloadSpy2 = expect.createSpy().andReturn(Promise.resolve())
 
             const stateMock = {
-                router: {
-                    components: [
-                        undefined,
-                        {
-                            [LOADER_FIELD]: preloadSpy1
-                        },
-                        undefined,
-                        {},
-                        undefined,
-                        {
-                            [LOADER_FIELD]: preloadSpy2
-                        },
-                        undefined
-                    ]
-                }
+                router: {}
             }
+
+            const components = [
+                undefined,
+                {
+                    [LOADER_FIELD]: preloadSpy1
+                },
+                undefined,
+                {},
+                undefined,
+                {
+                    [LOADER_FIELD]: preloadSpy2
+                },
+                undefined
+            ]
 
             const dispatchSpy = expect.createSpy()
 
@@ -92,7 +92,7 @@ describe(`redux-router`, () => {
                 foo: `bar`
             }
 
-            const result = preload(storeMock, props)
+            const result = preload(components, storeMock, props)
 
             expect(result.then).toExist()
 
@@ -105,7 +105,7 @@ describe(`redux-router`, () => {
             expect(preloadSpy2.calls[ 0 ].arguments).toEqual([ storeMock.dispatch, stateMock, props ])
 
             expect(dispatchSpy.calls.length).toEqual(1)
-            expect(dispatchSpy.calls[ 0 ].arguments[0]).toEqual({
+            expect(dispatchSpy.calls[ 0 ].arguments[ 0 ]).toEqual({
                 type: SERVER_LOAD
             })
         })
@@ -113,20 +113,21 @@ describe(`redux-router`, () => {
         it(`should throw error if someone preload method doesn't return promise`, () => {
             const stateMock = {
                 router: {
-                    components: [
-                        {
-                            [LOADER_FIELD]: () => undefined
-                        }
-                    ]
                 }
             }
+
+            const components = [
+                {
+                    [LOADER_FIELD]: () => undefined
+                }
+            ]
 
             const storeMock = {
                 getState: () => stateMock
             }
 
             expect(() => {
-                preload(storeMock)
+                preload(components, storeMock)
             }).toThrow(/first argument of the preload decorator should return a promise/)
         })
     })

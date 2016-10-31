@@ -1,10 +1,10 @@
 import {ROUTER_DID_CHANGE} from 'redux-router/lib/constants'
 import {SERVER_LOAD} from '../src/constants'
 import expect from 'expect'
-import reducer from '../src/routerPreloadStateReducer'
+import reducer from '../src/redux-router/reducer'
 
 describe(`redux-router-preload`, () => {
-    describe(`routerPreloadStateReducer()`, () => {
+    describe(`reduxRouterReducer()`, () => {
         it(`update on the first ROUTER_DID_CHANGE action`, () => {
             const initialState = reducer()
 

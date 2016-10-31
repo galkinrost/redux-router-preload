@@ -1,22 +1,19 @@
 /* eslint-env node */
 /* eslint-disable  no-console */
 
-import {match, reduxReactRouter} from 'redux-router/server'
+import { RouterContext, createMemoryHistory, match } from 'react-router'
 
-import {MOUNT_ID} from './constants'
-import {Provider} from 'react-redux'
+import { MOUNT_ID } from './constants'
+import { Provider } from 'react-redux'
 import React from 'react'
-import {ReduxRouter} from 'redux-router'
 import config from './webpack.config.clientDev'
-import {createMemoryHistory} from 'history'
-import {createStore} from 'redux'
+import { configureStore } from './store'
 import express from 'express'
-import {preload} from '../lib/server'
-import qs from 'query-string'
-import reducer from './reducer'
-import {renderToString} from 'react-dom/server'
+import { preload } from '../../lib/react-router-redux/server'
+import { renderToString } from 'react-dom/server'
 import routes from './routes'
 import serialize from 'serialize-javascript'
+import { syncHistoryWithStore } from 'react-router-redux'
 import webpack from 'webpack'
 
 import webpackDevMiddleware from 'webpack-dev-middleware'
@@ -25,12 +22,12 @@ import webpackHotMiddleware from 'webpack-hot-middleware'
 const app = express()
 const compiler = webpack(config)
 
-const getMarkup = (store) => {
+const getMarkup = (renderProps, store) => {
     const initialState = serialize(store.getState())
 
     const markup = renderToString(
-        <Provider store={store} key="provider">
-            <ReduxRouter/>
+        <Provider store={store}>
+            <RouterContext {...renderProps} />
         </Provider>
     )
 
@@ -42,6 +39,7 @@ const getMarkup = (store) => {
       </head>
       <body>
         <div id="${MOUNT_ID}">${markup}</div>
+        <div id="devtools"></div>
         <script>window.__initialState = ${initialState}</script>
         <script src="/static/bundle.js"></script>
       </body>
@@ -53,7 +51,7 @@ const PORT = 3000
 const STATUS_500 = 500
 const STATUS_302 = 302
 const STATUS_400 = 400
-const STATUS_200 = 22
+const STATUS_200 = 200
 
 app.use(webpackDevMiddleware(compiler, {
     noInfo: true,
@@ -63,26 +61,27 @@ app.use(webpackDevMiddleware(compiler, {
 app.use(webpackHotMiddleware(compiler))
 
 app.use((req, res) => {
-    const store = reduxReactRouter({routes, createHistory: createMemoryHistory})(createStore)(reducer)
-    const query = qs.stringify(req.query)
-    const url = `${req.path}${query.length ? `?${query}` : ``}`
+    const memoryHistory = createMemoryHistory(req.url)
+    const store = configureStore(memoryHistory)
+    const history = syncHistoryWithStore(memoryHistory, store)
 
-    store.dispatch(match(url, (error, redirectLocation, routerState) => {
+    match({history, routes, location: req.url}, (error, redirectLocation, renderProps) => {
 
         if (error) {
             console.error(`Router error:`, error)
             res.status(STATUS_500).send(error.message)
         } else if (redirectLocation) {
             res.redirect(STATUS_302, redirectLocation.pathname + redirectLocation.search)
-        } else if (routerState) {
-            preload(store)
+        } else if (renderProps) {
+            preload(renderProps, store)
                 .then(() =>
                     res.status(STATUS_200)
-                        .send(getMarkup(store)))
+                        .send(getMarkup(renderProps, store)))
+                .catch(e => console.error(e))
         } else {
             res.status(STATUS_400).send(`Not Found`)
         }
-    }))
+    })
 })
 
 app.listen(PORT, `localhost`, error => {

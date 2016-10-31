@@ -17,6 +17,13 @@ var reduxRouterExternal = {
     amd: 'redux-router'
 };
 
+var reactRouterReduxExternal = {
+    root: 'ReactRouterRedux',
+    commonjs2: 'react-router-redux',
+    commonjs: 'react-router-redux',
+    amd: 'react-router-redux'
+};
+
 var reactReduxExternal = {
     root: 'ReactRedux',
     commonjs2: 'react-redux',
@@ -30,11 +37,12 @@ var config = {
     externals: {
         'react': reactExternal,
         'react-redux': reactReduxExternal,
+        'react-router-redux': reactRouterReduxExternal,
         'redux-router': reduxRouterExternal
     },
     module: {
         loaders: [
-            { test: /\.js$/, loaders: ['babel-loader'], exclude: /node_modules/ }
+            {test: /\.js$/, loaders: [ 'babel-loader' ], exclude: /node_modules/}
         ]
     },
     output: {
@@ -69,6 +77,7 @@ if (env === 'production') {
             }
         })
     )
-};
+}
+;
 
 module.exports = config;

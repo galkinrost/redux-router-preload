@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
-import {LOADER_FIELD} from './constants'
+import React, { Component } from 'react'
+import { LOADER_FIELD } from './constants'
 
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import hoist from 'hoist-non-react-statics'
 import invariant from 'invariant'
 import isEqual from 'lodash.isequal'
@@ -15,8 +15,9 @@ const mapDispatchToProps = dispatch => ({
     dispatch
 })
 
+const defaultGetParams = props => props.routeParams
 
-export const createPreload = (promiseCreator, WrappedComponent) =>
+export const createPreload = (promiseCreator, WrappedComponent, getParams = defaultGetParams) =>
 
     class Preload extends Component {
 
@@ -28,8 +29,8 @@ export const createPreload = (promiseCreator, WrappedComponent) =>
         }
 
         componentWillReceiveProps(newProps) {
-            const newParams = newProps.state.router.params
-            const oldParams = this.props.state.router.params
+            const newParams = getParams(newProps)
+            const oldParams = getParams(this.props)
 
             if (!isEqual(newParams, oldParams)) {
                 this.preloadData(newProps)
@@ -72,7 +73,6 @@ export const createPreload = (promiseCreator, WrappedComponent) =>
 
         }
     }
-
 
 const preload = promiseCreator => WrappedComponent => {
 
