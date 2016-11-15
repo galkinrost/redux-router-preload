@@ -230,5 +230,82 @@ describe(`redux-router-preload`, () => {
 
             expect(result.length).toEqual(1)
         })
+
+        it(`should use shouldComponentUpdate from props if there is one`, () => {
+            const store = createStoreWithPreloadState({
+                loadedOnServer: true
+            })
+
+            const shouldComponentUpdate = (oldProps, newProps) => {
+                const oldState = oldProps.exampleState
+                const newState = newProps.exampleState
+
+                if (oldState.string === newState.string) {
+                    return false
+                }
+
+                if (oldState.number === newState.number) {
+                    return false
+                }
+
+                return true
+            }
+
+            const initialProps = {
+                exampleState: {
+                    number: 42,
+                    string: `on`
+                },
+                shouldComponentUpdate
+            }
+
+            const newProps = {
+                loadedOnServer: true,
+                exampleState: {
+                    number: 42,
+                    string: `off`
+                },
+                shouldComponentUpdate
+            }
+
+            const didUpdateSpy = expect.createSpy()
+
+            class DidUpdateChild extends Component {
+                render() {
+                    didUpdateSpy()
+                    return <div />
+                }
+            }
+
+            class Parent extends Component {
+                render() {
+                    return (
+                        <DidUpdateChild {...this.props} />
+                    )
+                }
+            }
+
+            expect(didUpdateSpy.calls.length).toEqual(0)
+
+            const preloadSpy = expect.createSpy()
+            const PreloadedParent = preload(preloadSpy)(Parent)
+            const PropChangeContainer = renderInContainer(PreloadedParent)
+
+            const tree = TestUtils.renderIntoDocument(
+                <Provider store={store}>
+                    <PropChangeContainer {...initialProps} />
+                </Provider>
+            )
+
+            const renderedPropChangeContainer = TestUtils.findRenderedComponentWithType(
+                tree,
+                PropChangeContainer
+            )
+
+            renderedPropChangeContainer.setState(newProps)
+
+            expect(didUpdateSpy.calls.length).toEqual(1)
+        })
+
     })
 })
