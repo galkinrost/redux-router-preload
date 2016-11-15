@@ -41,6 +41,22 @@ export const createPreload = (promiseCreator, WrappedComponent, getParams = defa
             this.preloadData()
         }
 
+        shouldComponentUpdate(nextProps, nextState) {
+            const { shouldComponentUpdate = () => true } = this.props
+            const prevProps = this.props
+            const props = {
+                prevProps,
+                nextProps
+            }
+            const prevState = this.state
+            const state = {
+                prevState,
+                nextState
+            }
+
+            return shouldComponentUpdate(props, state)
+        }
+
         preloadData(newProps) {
             const {preloadState, dispatch, state, ...ownProps} = newProps || this.props
 

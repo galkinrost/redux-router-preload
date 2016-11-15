@@ -230,5 +230,81 @@ describe(`redux-router-preload`, () => {
 
             expect(result.length).toEqual(1)
         })
+
+        it(`should use shouldComponentUpdate from props if there is one`, () => {
+            const store = createStoreWithPreloadState({
+                loadedOnServer: true
+            })
+
+            const shouldComponentUpdate = (props) => {
+                const oldProps = props.prevProps.exampleProps
+                const newProps = props.nextProps.exampleProps
+
+                if (oldProps.string === newProps.string) {
+                    return false
+                }
+
+                if (oldProps.number === newProps.number) {
+                    return false
+                }
+
+                return true
+            }
+
+            const initialProps = {
+                exampleProps: {
+                    number: 42,
+                    string: `on`
+                },
+                shouldComponentUpdate
+            }
+
+            const newProps = {
+                exampleProps: {
+                    number: 42,
+                    string: `off`
+                },
+                shouldComponentUpdate
+            }
+
+            const didUpdateSpy = expect.createSpy()
+
+            class DidUpdateChild extends Component {
+                render() {
+                    didUpdateSpy()
+                    return <div />
+                }
+            }
+
+            class Parent extends Component {
+                render() {
+                    return (
+                        <DidUpdateChild {...this.props} />
+                    )
+                }
+            }
+
+            expect(didUpdateSpy.calls.length).toEqual(0)
+
+            const preloadSpy = expect.createSpy()
+            const PreloadedParent = preload(preloadSpy)(Parent)
+            const PropChangeContainer = renderInContainer(PreloadedParent)
+
+            const tree = TestUtils.renderIntoDocument(
+                <Provider store={store}>
+                    <PropChangeContainer {...initialProps} />
+                </Provider>
+            )
+
+            const renderedPropChangeContainer = TestUtils.findRenderedComponentWithType(
+                tree,
+                PropChangeContainer
+            )
+
+            renderedPropChangeContainer.setState(newProps)
+
+            expect(didUpdateSpy.calls.length).toEqual(1)
+        })
+
     })
 })
