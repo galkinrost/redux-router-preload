@@ -231,12 +231,12 @@ describe(`redux-router-preload`, () => {
             expect(result.length).toEqual(1)
         })
 
-        it(`should use shouldComponentUpdate from props if there is one`, () => {
+        it(`should use shouldComponentUpdate if there is one`, () => {
             const store = createStoreWithPreloadState({
                 loadedOnServer: true
             })
 
-            const shouldComponentUpdate = (props) => {
+            const shouldComponentUpdate = props => {
                 const oldProps = props.prevProps.exampleProps
                 const newProps = props.nextProps.exampleProps
 
@@ -255,16 +255,14 @@ describe(`redux-router-preload`, () => {
                 exampleProps: {
                     number: 42,
                     string: `on`
-                },
-                shouldComponentUpdate
+                }
             }
 
             const newProps = {
                 exampleProps: {
                     number: 42,
                     string: `off`
-                },
-                shouldComponentUpdate
+                }
             }
 
             const didUpdateSpy = expect.createSpy()
@@ -287,7 +285,7 @@ describe(`redux-router-preload`, () => {
             expect(didUpdateSpy.calls.length).toEqual(0)
 
             const preloadSpy = expect.createSpy()
-            const PreloadedParent = preload(preloadSpy)(Parent)
+            const PreloadedParent = preload(preloadSpy, shouldComponentUpdate)(Parent)
             const PropChangeContainer = renderInContainer(PreloadedParent)
 
             const tree = TestUtils.renderIntoDocument(

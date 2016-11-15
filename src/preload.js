@@ -17,8 +17,12 @@ const mapDispatchToProps = dispatch => ({
 
 const defaultGetParams = props => props.routeParams
 
-export const createPreload = (promiseCreator, WrappedComponent, getParams = defaultGetParams) =>
-
+export const createPreload = (
+    promiseCreator,
+    WrappedComponent,
+    shouldUpdate = () => true,
+    getParams = defaultGetParams
+) =>
     class Preload extends Component {
 
         constructor() {
@@ -42,7 +46,6 @@ export const createPreload = (promiseCreator, WrappedComponent, getParams = defa
         }
 
         shouldComponentUpdate(nextProps, nextState) {
-            const { shouldComponentUpdate = () => true } = this.props
             const prevProps = this.props
             const props = {
                 prevProps,
@@ -54,7 +57,7 @@ export const createPreload = (promiseCreator, WrappedComponent, getParams = defa
                 nextState
             }
 
-            return shouldComponentUpdate(props, state)
+            return shouldUpdate(props, state)
         }
 
         preloadData(newProps) {
@@ -90,9 +93,9 @@ export const createPreload = (promiseCreator, WrappedComponent, getParams = defa
         }
     }
 
-const preload = promiseCreator => WrappedComponent => {
+const preload = (promiseCreator, shouldUpdate) => WrappedComponent => {
 
-    const Preload = createPreload(promiseCreator, WrappedComponent)
+    const Preload = createPreload(promiseCreator, WrappedComponent, shouldUpdate)
 
     Preload[ LOADER_FIELD ] = promiseCreator
 
