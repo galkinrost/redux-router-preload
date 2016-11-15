@@ -236,15 +236,15 @@ describe(`redux-router-preload`, () => {
                 loadedOnServer: true
             })
 
-            const shouldComponentUpdate = (oldProps, newProps) => {
-                const oldState = oldProps.exampleState
-                const newState = newProps.exampleState
+            const shouldComponentUpdate = (props) => {
+                const oldProps = props.prevProps.exampleProps
+                const newProps = props.nextProps.exampleProps
 
-                if (oldState.string === newState.string) {
+                if (oldProps.string === newProps.string) {
                     return false
                 }
 
-                if (oldState.number === newState.number) {
+                if (oldProps.number === newProps.number) {
                     return false
                 }
 
@@ -252,7 +252,7 @@ describe(`redux-router-preload`, () => {
             }
 
             const initialProps = {
-                exampleState: {
+                exampleProps: {
                     number: 42,
                     string: `on`
                 },
@@ -260,8 +260,7 @@ describe(`redux-router-preload`, () => {
             }
 
             const newProps = {
-                loadedOnServer: true,
-                exampleState: {
+                exampleProps: {
                     number: 42,
                     string: `off`
                 },
